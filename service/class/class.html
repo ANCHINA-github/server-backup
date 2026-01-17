@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级墙-2025</title>
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 容器样式 */
+        .container {
+            width: 100%;
+            padding-right: 1rem;
+            padding-left: 1rem;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        @media (min-width: 640px) {
+            .container {
+                max-width: 640px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1024px;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1280px;
+            }
+        }
+
+        /* 折叠面板样式 */
+        details {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        details summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 0.75rem 1rem;
+            background-color: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details .panel-content {
+            padding: 1rem;
+        }
+
+        details summary i {
+            color: #6b7280;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary i {
+            transform: rotate(180deg);
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            padding: 0.5rem 1rem;
+            text-align: left;
+            color: #374151;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        table td {
+            padding: 0.5rem 1rem;
+            color: #4b5563;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .modal-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .modal-box h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #1f2937;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            color: #1f2937;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+
+        #errorTip {
+            color: #ef4444;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* 移除数字输入框箭头 */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -webkit-appearance: textfield;
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+ 
+        /* 导航样式 section1 */
+        .section1 {
+            background-color: #c60000;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+        }
+
+        .logo {
+            width: 3rem;
+            height: 3rem;
+            background-color: #ffffff00;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .service-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: center;
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .back-link {
+            color: #ffd000;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+        }
+
+        .back-link i {
+            font-size: 1.25rem;
+        }
+
+        /* 主体样式 section2 */
+        .section2 {
+            flex: 1;
+            padding: 1.5rem 0;
+        }
+
+        /* 页脚样式 section3 */
+        .section3 {
+            background-color: #c60000;
+            border-top: 1px solid #e5e7eb;
+            padding: 1rem 0;
+        }
+
+        .footer-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+        }
+
+        .footer-container .logo {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .footer-container .service-name {
+            font-size: 1rem;
+            color: #4b5563;
+            margin: 0;
+            flex: none;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .nav-container .logo {
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.875rem;
+            }
+
+            .nav-container .service-name {
+                font-size: 1rem;
+            }
+
+            .modal-box {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 身份识别模态框蒙层 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    
+    <!-- 身份识别模态框 -->
+    <div class="modal-box" id="modalBox">
+        <h3>身份识别验证</h3>
+        <div class="form-group">
+            <label for="nameInput">姓名（≤4个字）</label>
+            <input type="text" id="nameInput" class="form-control" maxlength="4">
+        </div>
+        <div class="form-group">
+            <label for="classInput">班级（≤4位数字）</label>
+            <input type="number" id="classInput" class="form-control" maxlength="4">
+        </div>
+        <div id="errorTip" class="text-red-500">请再次输入信息！</div>
+        <button id="submitBtn" class="btn">提交验证</button>
+    </div>
+
+    <!-- 导航部分 section1 -->
+    <header class="section1">
+        <div class="nav-container container">
+            <!-- LOGO部分 -->
+            <div class="logo">
+<img src="./logo.png" alt="logo" style="width: 45px;">
+            </div>
+            <!-- 服务名字 -->
+            <h1 class="service-name">班级墙-2025</h1>
+            <!-- 返回图标 -->
+            <a href="javascript:history.go(-1)" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- 表格部分 section2 -->
+    <main class="section2 container">
+        <!-- 分组列表（初高中六个年级） -->
+        <div class="panel-group">
+            <!-- 初一年级 -->
+            <details>
+                <summary>
+                    <span>初一年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 10行空班级数据 -->
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- 初二年级 -->
+            <details>
+                <summary>
+                    <span>初二年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- 初三年级 -->
+            <details>
+                <summary>
+                    <span>初三年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- 高一年级 -->
+            <details>
+                <summary>
+                    <span>高一年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- 高二年级 -->
+            <details>
+                <summary>
+                    <span>高二年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>303</td><td>—</td></tr>
+                            <tr><td>304</td><td>—</td></tr>
+                            <tr><td>305</td><td>—</td></tr>
+                            <tr><td>306</td><td>—</td></tr>
+                            <tr><td>307</td><td>—</td></tr>
+                            <tr><td>308</td><td>—</td></tr>
+                            <tr><td>309</td><td>—</td></tr>
+                            <tr><td>310</td><td>—</td></tr>
+                            <tr><td>311</td><td>—</td></tr>
+                            <tr><td>312</td><td>—</td></tr>
+                            <tr><td>313</td><td>—</td></tr>
+                            <tr><td>314</td><td>—</td></tr>
+                            <tr><td>315</td><td>—</td></tr>
+                            <tr><td>316</td><td>—</td></tr>
+                            <tr><td>317</td><td>—</td></tr>
+                            <tr><td>318</td><td>—</td></tr>
+                            <tr><td>319</td><td>—</td></tr>
+                            <tr><td>320</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- 高三年级 -->
+            <details>
+                <summary>
+                    <span>高三年级</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </summary>
+                <div class="panel-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                            <tr><td>—</td><td>—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+    </main>
+
+    <!-- 页脚部分 section3 -->
+    <footer class="section3">
+        <div class="footer-container">
+            <!-- LOGO -->
+            <div class="logo">
+<img src="./logo.png" alt="logo" style="width: 30px;">
+            </div>
+            <!-- 服务名字 -->
+            <span class="service-name">班级墙-2025</span>
+        </div>
+    </footer>
+
+    <script>
+        // 折叠面板箭头切换
+        const detailsElements = document.querySelectorAll('details');
+        detailsElements.forEach(detail => {
+            const icon = detail.querySelector('i');
+            detail.addEventListener('toggle', () => {
+                if (detail.open) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0)';
+                }
+            });
+        });
+
+        // 模态框逻辑
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalBox = document.getElementById('modalBox');
+        const nameInput = document.getElementById('nameInput');
+        const classInput = document.getElementById('classInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorTip = document.getElementById('errorTip');
+        
+        // 页面加载完成后显示模态框
+        window.addEventListener('DOMContentLoaded', () => {
+            modalOverlay.style.display = 'block';
+            modalBox.style.display = 'block';
+            // 聚焦姓名输入框
+            nameInput.focus();
+        });
+
+        // 蒙层点击不关闭模态框（阻止冒泡）
+        modalOverlay.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // 输入验证函数
+        function validateInput() {
+            const name = nameInput.value.trim();
+            const classNum = classInput.value.trim();
+            
+            // 姓名验证：非空且≤4字
+            if (!name || name.length > 4) {
+                alert('请输入有效的姓名（≤4个字）');
+                return false;
+            }
+            
+            // 班级验证：非空、数字且≤4位
+            if (!classNum || isNaN(classNum) || classNum.length > 4) {
+                alert('请输入有效的班级（≤4位数字）');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // 提交按钮点击事件（优化后：验证通过直接进入）
+        submitBtn.addEventListener('click', () => {
+            // 输入格式验证通过
+            if (validateInput()) {
+                modalOverlay.style.display = 'none';
+                modalBox.style.display = 'none';
+                errorTip.style.display = 'none';
+            }
+        });
+
+        // 回车提交
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
