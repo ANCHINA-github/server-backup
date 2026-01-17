@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教师联系信息</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome图标库 -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- Tailwind配置 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5', // 主色调：靛蓝色
+            secondary: '#10B981', // 辅助色：翠绿色
+            neutral: '#F3F4F6', // 中性色：浅灰色
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .teacher-card-shadow {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+      .teacher-card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .teacher-card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+  <!-- 页面加载动画 -->
+  <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50 transition-opacity duration-500">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- 身份验证模态框 -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-40 transition-opacity duration-300">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all duration-300 scale-100">
+      <div class="p-6">
+        <div class="text-center mb-6">
+          <i class="fa fa-lock text-primary text-4xl mb-2"></i>
+          <h2 class="text-2xl font-bold text-gray-800">身份验证</h2>
+          <p class="text-gray-600 mt-1">请输入您的信息以访问教师联系页面</p>
+        </div>
+        
+        <form id="auth-form" class="space-y-4">
+          <div>
+            <label for="fullname" class="block text-sm font-medium text-gray-700 mb-1">真实姓名</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                <i class="fa fa-user"></i>
+              </span>
+              <input type="text" id="fullname" name="fullname" placeholder="请输入您的真实姓名" 
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all"
+                maxlength="4" required>
+              <p class="text-xs text-gray-500 mt-1">最多4个汉字</p>
+            </div>
+          </div>
+          
+          <div>
+            <label for="class" class="block text-sm font-medium text-gray-700 mb-1">班级</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                <i class="fa fa-graduation-cap"></i>
+              </span>
+              <input type="text" id="class" name="class" placeholder="请输入您的班级" 
+                class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all"
+                maxlength="4" pattern="[0-9]{1,4}" required>
+              <p class="text-xs text-gray-500 mt-1">最多4位数字</p>
+            </div>
+          </div>
+          
+          <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white py-3 px-4 rounded-lg transition-all font-medium flex items-center justify-center">
+            <i class="fa fa-unlock-alt mr-2"></i> 验证并访问
+          </button>
+        </form>
+        
+        <div id="error-message" class="hidden mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-center">
+          <i class="fa fa-exclamation-circle mr-1"></i>
+          <span id="error-text">验证失败，请检查您的输入</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容区域 -->
+  <main id="main-content" class="hidden container mx-auto px-4 py-8">
+    <!-- 页面标题 -->
+    <header class="mb-8 text-center">
+      <h1 class="text-[clamp(1.8rem,5vw,2.8rem)] font-bold text-gray-800 mb-2">教师联系信息</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">以下是我们优秀的教师团队，您可以点击查看详细联系信息</p>
+    </header>
+    
+    <!-- 教师图片展示网格 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
+      <!-- 教师卡片 1 -->
+      <div class="teacher-card-shadow teacher-card-hover rounded-xl overflow-hidden bg-white">
+        <div class="relative aspect-[3/4] overflow-hidden">
+          <img src="./t (1).jpg" alt="教师1" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white w-full">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 教师卡片 2 -->
+      <div class="teacher-card-shadow teacher-card-hover rounded-xl overflow-hidden bg-white">
+        <div class="relative aspect-[3/4] overflow-hidden">
+          <img src="./t (2).jpg" alt="教师2" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white w-full">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 教师卡片 3 -->
+      <div class="teacher-card-shadow teacher-card-hover rounded-xl overflow-hidden bg-white">
+        <div class="relative aspect-[3/4] overflow-hidden">
+          <img src="./t (3).jpg" alt="教师3" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white w-full">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 教师卡片 4 -->
+      <div class="teacher-card-shadow teacher-card-hover rounded-xl overflow-hidden bg-white">
+        <div class="relative aspect-[3/4] overflow-hidden">
+          <img src="./t (4).jpg" alt="教师4" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white w-full">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 教师卡片 5 -->
+      <div class="teacher-card-shadow teacher-card-hover rounded-xl overflow-hidden bg-white">
+        <div class="relative aspect-[3/4] overflow-hidden">
+          <img src="./t (5).jpg" alt="教师5" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white w-full">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="mt-12 text-center text-gray-500 text-sm">
+      <p>&copy; 2023 学校名称. 保留所有权利.</p>
+    </footer>
+  </main>
+
+  <script>
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+      const loader = document.getElementById('loader');
+      const authModal = document.getElementById('auth-modal');
+      const mainContent = document.getElementById('main-content');
+      const authForm = document.getElementById('auth-form');
+      const errorMessage = document.getElementById('error-message');
+      const errorText = document.getElementById('error-text');
+      
+      // 模拟加载过程
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+          
+          // 检查用户是否已通过验证
+          const isAuthenticated = localStorage.getItem('isAuthenticated');
+          
+          if (isAuthenticated === 'true') {
+            // 如果已验证，直接显示主内容
+            authModal.style.display = 'none';
+            mainContent.classList.remove('hidden');
+            mainContent.classList.add('animate-fade-in');
+          } else {
+            // 否则显示验证模态框
+            authModal.style.display = 'flex';
+          }
+        }, 500);
+      }, 1000);
+      
+      // 表单提交处理
+      authForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fullname = document.getElementById('fullname').value.trim();
+        const classNum = document.getElementById('class').value.trim();
+        
+        // 验证规则：姓名≤4个字符，班级≤4位数字
+        const nameValid = fullname.length > 0 && fullname.length <= 4;
+        const classValid = /^\d{1,4}$/.test(classNum);
+        
+        if (nameValid && classValid) {
+          // 验证通过
+          localStorage.setItem('isAuthenticated', 'true');
+          errorMessage.classList.add('hidden');
+          
+          // 隐藏模态框，显示主内容
+          authModal.style.opacity = '0';
+          setTimeout(() => {
+            authModal.style.display = 'none';
+            mainContent.classList.remove('hidden');
+            // 添加淡入动画
+            mainContent.animate([
+              { opacity: 0, transform: 'translateY(20px)' },
+              { opacity: 1, transform: 'translateY(0)' }
+            ], {
+              duration: 500,
+              easing: 'ease-out',
+              fill: 'forwards'
+            });
+          }, 300);
+        } else {
+          // 验证失败
+          if (!nameValid && !classValid) {
+            errorText.textContent = '姓名和班级格式不正确，请重新输入';
+          } else if (!nameValid) {
+            errorText.textContent = '姓名格式不正确，最多4个字符';
+          } else {
+            errorText.textContent = '班级格式不正确，最多4位数字';
+          }
+          
+          errorMessage.classList.remove('hidden');
+          
+          // 添加抖动动画
+          authModal.querySelector('.max-w-md').animate([
+            { transform: 'translateX(0)' },
+            { transform: 'translateX(-10px)' },
+            { transform: 'translateX(10px)' },
+            { transform: 'translateX(-5px)' },
+            { transform: 'translateX(5px)' },
+            { transform: 'translateX(0)' }
+          ], {
+            duration: 500,
+            easing: 'ease-in-out'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
