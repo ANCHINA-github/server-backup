@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端核心适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="./logo.png">
+    <title>通知详情</title>
+    <style>
+        /* 全局重置 & 基础兼容样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+        }
+
+        /* 跨系统/浏览器兼容字体 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            line-height: 1.8;
+            color: #333;
+            background-color: #f8f9fa;
+            /* IE11兼容 */
+            font-size: 16px;
+            /* 页面整体居中 */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* 返回图标容器 */
+        .back-icon-wrap {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 10;
+            cursor: pointer;
+            /* 适配触摸交互 */
+            touch-action: manipulation;
+        }
+
+        /* 返回图标样式 (SVG矢量图标，适配所有分辨率) */
+        .back-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            fill: #165dff;
+            transition: all 0.2s ease;
+            /* IE11兼容 */
+            display: block;
+        }
+
+        /* PC端hover效果 */
+        .back-icon-wrap:hover .back-icon {
+            fill: #0d47a1;
+            transform: translateX(-2px);
+            -webkit-transform: translateX(-2px); /* 兼容iOS/安卓webkit */
+            -ms-transform: translateX(-2px); /* IE11 */
+        }
+
+        /* 移动端点击缩放反馈 */
+        .back-icon-wrap:active .back-icon {
+            transform: scale(0.95);
+            -webkit-transform: scale(0.95);
+            -ms-transform: scale(0.95);
+        }
+
+        /* 通知圆角方框 */
+        .notification-box {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 16px; /* 大圆角更符合现代设计 */
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e9f0;
+            /* 淡入动画 */
+            opacity: 0;
+            transform: translateY(20px);
+            -webkit-transform: translateY(20px);
+            -ms-transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+            -webkit-animation: fadeIn 0.8s ease-out forwards; /* 兼容webkit内核 */
+            /* IE11动画兼容 */
+            -ms-animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* 淡入动画关键帧 (多前缀兼容) */
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+                -webkit-transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                -webkit-transform: translateY(0);
+            }
+        }
+
+        @-ms-keyframes fadeIn {
+            from {
+                opacity: 0;
+                -ms-transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                -ms-transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 通知标题 */
+        .notification-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* 通知内容 */
+        .notification-content {
+            color: #475569;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .notification-content p {
+            margin-bottom: 1rem;
+        }
+
+        .notification-content strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .notification-content ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .notification-content li {
+            margin-bottom: 0.8rem;
+        }
+
+        /* 响应式适配 (移动端/平板) */
+        @media (max-width: 768px) {
+            .notification-box {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .notification-title {
+                font-size: 1.3rem;
+            }
+
+            .back-icon {
+                width: 2rem;
+                height: 2rem;
+            }
+
+            .back-icon-wrap {
+                top: 1rem;
+                left: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notification-box {
+                padding: 1.2rem;
+                border-radius: 8px;
+            }
+
+            .notification-title {
+                font-size: 1.2rem;
+            }
+
+            .notification-content {
+                font-size: 0.95rem;
+            }
+
+            body {
+                padding: 1rem 0.8rem;
+            }
+        }
+
+        /* Linux/Windows滚动条兼容 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* IE11专属兼容 */
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            .notification-box {
+                opacity: 1; /* IE11动画降级，直接显示 */
+                transform: none;
+            }
+            .back-icon {
+                fill: #165dff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 返回图标 -->
+    <div class="back-icon-wrap" id="backIcon">
+        <!-- SVG返回箭头 (矢量图标，无图片依赖) -->
+        <svg class="back-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </div>
+
+    <!-- 通知圆角方框 -->
+    <div class="notification-box">
+        <h2 class="notification-title">通知</h2>
+        <div class="notification-content">
+            <p>尊敬的用户，您好！</p>
+            <p>本次上线的更新日志功能已完成全平台适配，现将核心信息通知如下：</p>
+            <ul>
+                <li><strong>BUG说明</strong>：未上线前一直都是一个版本，只会做略微改动，一些BUG会一直存在直到圣诞节全面更新才会消除。</li>
+                <li><strong>上线时间</strong>：2025年12月25日</li>
+                <li><strong>数据清除</strong>:正式上线后原有的数据将全部清除，请注意</li>
+            </ul>
+            <p>如在使用过程中遇到任何兼容性问题，请反馈，我们将及时处理。</p>
+            <p>感谢您的使用与支持！</p>
+        </div>
+    </div>
+
+    <script>
+        // 兼容IE11的DOM加载事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回图标点击事件 (模拟返回上一页，可替换为实际链接)
+            const backIcon = document.getElementById('backIcon');
+            backIcon.addEventListener('click', function() {
+                // 实际项目中可替换为具体返回链接，例如：window.location.href = '/home';
+                if (window.history.length > 1) {
+                    window.history.back(); // 有历史记录则返回上一页
+                } else {
+                    alert('');
+                }
+            });
+
+            // IE11兼容性处理
+            if (!!window.MSInputMethodContext && !!document.documentMode) {
+                // 修复IE11下SVG图标显示问题
+                const svgIcon = document.querySelector('.back-icon');
+                svgIcon.style.width = '35px';
+                svgIcon.style.height = '35px';
+                // 修复方框内边距
+                document.querySelector('.notification-box').style.padding = '30px';
+            }
+
+            // 移动端触摸优化
+            if ('ontouchstart' in window) {
+                // 移除PC端hover效果，保留点击反馈
+                backIcon.style.webkitTapHighlightColor = 'transparent';
+            }
+        });
+    </script>
+</body>
+</html>

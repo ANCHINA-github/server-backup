@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端适配核心配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="./logo.png">
+    <title>信息墙总后台</title>
+    <style>
+        /* 全局样式重置 & 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* CSS变量：统一管理配色和通用尺寸 */
+        :root {
+            --color-primary: #165DFF; /* 主色调-专业蓝 */
+            --color-primary-hover: #0F48D0; /* 主色悬停 */
+            --color-bg-main: #F5F7FA; /* 页面背景 */
+            --color-bg-card: #FFFFFF; /* 卡片背景 */
+            --color-text-main: #4E5969; /* 主要文字 */
+            --color-text-secondary: #7B8794; /* 次要文字 */
+            --color-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08); /* 轻阴影 */
+            --color-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12); /* 悬停阴影 */
+            --radius-normal: 8px; /* 常规圆角 */
+            --radius-sm: 6px; /* 小圆角 */
+            --transition-normal: all 0.2s ease; /* 常规过渡 */
+        }
+
+        /* 页面主体 */
+        body {
+            background-color: var(--color-bg-main);
+            min-height: 100vh;
+        }
+
+        /* 容器：限制最大宽度，居中对齐 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* 头部样式 */
+        header {
+            background-color: var(--color-bg-card);
+            box-shadow: var(--color-shadow-light);
+            padding: 24px 0;
+            margin-bottom: 32px;
+        }
+
+        .header-title {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--color-text-main);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .header-desc {
+            font-size: clamp(0.875rem, 1.5vw, 1rem);
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        /* 核心：后台卡片网格布局（响应式） */
+        .backend-grid {
+            display: grid;
+            /* 移动端默认1列 */
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        /* 平板适配：768px以上3列 */
+        @media (min-width: 768px) {
+            .backend-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* 电脑适配：1024px以上4列 */
+        @media (min-width: 1024px) {
+            .backend-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* 卡片样式 */
+        .backend-card {
+            background-color: var(--color-bg-card);
+            border-radius: var(--radius-normal);
+            padding: 20px;
+            box-shadow: var(--color-shadow-light);
+            transition: var(--transition-normal);
+        }
+
+        .backend-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--color-shadow-hover);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* 按钮样式（适配触控） */
+        .card-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            background-color: var(--color-primary);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            transition: var(--transition-normal);
+            /* 移动端触控区域最小48px */
+            min-height: 48px;
+            line-height: 32px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .card-btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        /* 底部样式 */
+        footer {
+            background-color: var(--color-bg-card);
+            box-shadow: var(--color-shadow-light);
+            padding: 16px 0;
+            margin-top: 32px;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        /* 兼容IE11等旧浏览器的降级处理 */
+        @supports not (clamp(1rem, 2vw, 2rem)) {
+            .header-title {
+                font-size: 2rem;
+            }
+            .header-desc {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header>
+        <div class="container">
+            <h1 class="header-title">信息墙总后台</h1>
+            <p class="header-desc">305制造</p>
+        </div>
+    </header>
+
+    <!-- 主体内容：后台链接网格 -->
+    <main class="container">
+        <div class="backend-grid">
+            <!-- 后台1 -->
+            <div class="backend-card">
+                <h3 class="card-title">表白墙</h3>
+                <p class="card-desc">审核帖子和评论</p>
+                <a href="./love/admin-pocom/admin-password.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台2 -->
+            <div class="backend-card">
+                <h3 class="card-title">校内趣闻</h3>
+                <p class="card-desc">审核帖子和评论</p>
+                <a href="./fun/admin-pocom/admin-password.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台3 -->
+            <div class="backend-card">
+                <h3 class="card-title">寻物启事</h3>
+                <p class="card-desc">审核帖子和评论</p>
+                <a href="./find/admin-pocom/admin-password.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台4 -->
+            <div class="backend-card">
+                <h3 class="card-title">反馈中心</h3>
+                <p class="card-desc">查看反馈</p>
+                <a href="./feedback/admin-feedback.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台5 -->
+            <div class="backend-card">
+                <h3 class="card-title">考试预报-发布后台</h3>
+                <p class="card-desc">发布预报</p>
+                <a href="./testinfor/sign/password-sign.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台6 -->
+            <div class="backend-card">
+                <h3 class="card-title">考试预报-审核后台</h3>
+                <p class="card-desc">审核评论</p>
+                <a href="./testinfor/comments/password-comment.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台7 -->
+            <div class="backend-card">
+                <h3 class="card-title">官方活动-发布后台</h3>
+                <p class="card-desc">发布活动</p>
+                <a href="./activity/sign/password-sign.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台8 -->
+            <div class="backend-card">
+                <h3 class="card-title">官方活动-审核后台</h3>
+                <p class="card-desc">审核评论</p>
+                <a href="./activity/comments/password-comment.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台9 -->
+            <div class="backend-card">
+                <h3 class="card-title">校方通知-发布后台</h3>
+                <p class="card-desc">发布通知</p>
+                <a href="./sign/sign/password-sign.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台10 -->
+            <div class="backend-card">
+                <h3 class="card-title">校方通知-审核后台</h3>
+                <p class="card-desc">审核评论</p>
+                <a href="./sign/comments/password-comment.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+            <!-- 后台11 -->
+            <div class="backend-card">
+                <h3 class="card-title">线上泡面-审核评论后台</h3>
+                <p class="card-desc">审核评论的</p>
+                <a href="./k/comments/password-comment.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+             <!--后台12 -->
+            <div class="backend-card">
+                <h3 class="card-title">线上泡面-泡面品种发布</h3>
+                <p class="card-desc">现在有哪些泡面、零食</p>
+                <a href="./k/sign/password-sign.php" target="_blank" class="card-btn">访问后台</a>
+            </div>
+             <!--后台13 
+            <div class="backend-card">
+                <h3 class="card-title">安全审计后台</h3>
+                <p class="card-desc">操作日志、安全告警、权限审计</p>
+                <a href="https://后台13地址" target="_blank" class="card-btn">访问后台</a>
+            </div>
+             后台14 
+            <div class="backend-card">
+                <h3 class="card-title">API管理后台</h3>
+                <p class="card-desc">接口文档、调用统计、密钥管理</p>
+                <a href="https://后台14地址" target="_blank" class="card-btn">访问后台</a>
+            </div>
+             后台15 
+            <div class="backend-card">
+                <h3 class="card-title">设备管理后台</h3>
+                <p class="card-desc">终端设备、在线状态、固件升级</p>
+                <a href="https://后台15地址" target="_blank" class="card-btn">访问后台</a>
+            </div>
+        -->
+        </div>
+    </main>
+
+    <!-- 底部区域 -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">仅授权管理员使用</p>
+        </div>
+    </footer>
+</body>
+</html>

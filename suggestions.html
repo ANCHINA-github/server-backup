@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="./logo.png">
+  <title>武冈十中 | 积极建议墙</title>
+  <style>
+    /* ========== 全局样式重置与基础配置 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    :root {
+      /* 星空与星星色彩变量 */
+      --star-light-blue: #00f0ff;
+      --star-light-purple: #9d00ff;
+      --dark-space: #000511;
+      --deep-space: #020a24;
+      --gray-200: #e5e7eb;
+
+      /* 响应式尺寸变量 */
+      --avatar-size-mobile: 50px;
+      --avatar-size-tablet: 70px;
+      --avatar-size-desktop: 90px;
+      --nickname-font-mobile: 12px;
+      --nickname-font-tablet: 14px;
+      --nickname-font-desktop: 16px;
+    }
+
+    body {
+      background: linear-gradient(var(--dark-space), var(--deep-space));
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      overflow-y: hidden; /* 避免页面滚动，确保容器尺寸准确 */
+    }
+
+    /* ========== 星空背景画布 ========== */
+    #starryCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ========== 星星容器（用户头像+昵称） ========== */
+    #userStarsContainer {
+      position: relative;
+      z-index: 10;
+      width: 98%;
+      height: 100vh;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    /* ========== 单个星星单元（头像+昵称） ========== */
+    .star-unit {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1;
+      /* 固定单元宽度，避免昵称过长导致宽度变化 */
+      width: fit-content;
+    }
+
+    /* 头像（星星本体） */
+    .user-avatar {
+      width: var(--avatar-size-mobile);
+      height: var(--avatar-size-mobile);
+      border-radius: 50%;
+      overflow: hidden;
+      /* 基础发光效果 */
+      box-shadow: 0 0 8px var(--star-light-blue), 0 0 15px rgba(0, 240, 255, 0.6), 0 0 25px rgba(157, 0, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .user-avatar:hover {
+      /* 悬浮增强发光效果 */
+      box-shadow: 0 0 15px var(--star-light-blue), 0 0 25px rgba(0, 240, 255, 0.8), 0 0 40px rgba(157, 0, 255, 0.6), 0 0 60px rgba(255, 0, 200, 0.4);
+      transform: scale(1.1);
+      z-index: 20;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* 昵称（星星下方文字） */
+    .user-nickname {
+      color: var(--star-light-blue);
+      font-size: var(--nickname-font-mobile);
+      margin-top: 8px;
+      text-align: center;
+      /* 文字发光效果，呼应星空风格 */
+      text-shadow: 0 0 5px var(--star-light-blue), 0 0 10px rgba(0, 240, 255, 0.7);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-avatar:hover + .user-nickname {
+      color: var(--star-light-purple);
+      text-shadow: 0 0 8px var(--star-light-purple), 0 0 15px rgba(157, 0, 255, 0.8);
+      transform: scale(1.1);
+    }
+
+    /* ========== 响应式媒体查询 ========== */
+    /* 平板 (768px+) */
+    @media (min-width: 768px) {
+      #userStarsContainer {
+        width: 95%;
+      }
+
+      .user-avatar {
+        width: var(--avatar-size-tablet);
+        height: var(--avatar-size-tablet);
+      }
+
+      .user-nickname {
+        font-size: var(--nickname-font-tablet);
+        margin-top: 10px;
+        max-width: 150px;
+      }
+    }
+
+    /* 桌面 (1024px+) */
+    @media (min-width: 1024px) {
+      #userStarsContainer {
+        width: 90%;
+      }
+
+      .user-avatar {
+        width: var(--avatar-size-desktop);
+        height: var(--avatar-size-desktop);
+      }
+
+      .user-nickname {
+        font-size: var(--nickname-font-desktop);
+        margin-top: 12px;
+        max-width: 180px;
+      }
+    }
+
+    /* 大桌面 (1280px+) */
+    @media (min-width: 1280px) {
+      #userStarsContainer {
+        width: 85%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 星空背景画布 -->
+  <canvas id="starryCanvas"></canvas>
+
+  <!-- 星星（用户头像+昵称）容器 -->
+  <div id="userStarsContainer"></div>
+
+  <script>
+    // ========== 模拟用户数据（仅保留头像和昵称） ==========
+    const userData = [
+      { id: 1, avatar: "https://picsum.photos/200/200?random=1", nickname: "李星辰" },
+      { id: 2, avatar: "https://picsum.photos/200/200?random=2", nickname: "苏晚晴" },
+      { id: 3, avatar: "https://picsum.photos/200/200?random=3", nickname: "张浩宇" },
+      { id: 4, avatar: "https://picsum.photos/200/200?random=4", nickname: "陈雨桐" },
+      { id: 5, avatar: "https://picsum.photos/200/200?random=5", nickname: "赵睿泽" },
+      { id: 6, avatar: "https://picsum.photos/200/200?random=6", nickname: "林晓雅" },
+      { id: 7, avatar: "https://picsum.photos/200/200?random=7", nickname: "王梓轩" },
+      { id: 8, avatar: "https://picsum.photos/200/200?random=8", nickname: "刘思语" },
+      { id: 9, avatar: "https://picsum.photos/200/200?random=9", nickname: "周昱辰" },
+      { id: 10, avatar: "https://picsum.photos/200/200?random=10", nickname: "郑舒涵" },
+      { id: 11, avatar: "https://picsum.photos/200/200?random=11", nickname: "江熠然" },
+      { id: 12, avatar: "https://picsum.photos/200/200?random=12", nickname: "许若曦" }
+    ];
+
+    // ========== 1. 星空背景实现 ==========
+    const starryCanvas = document.getElementById('starryCanvas');
+    const ctx = starryCanvas.getContext('2d');
+    let stars = [];
+
+    // 设置星空画布大小
+    function resizeStarryCanvas() {
+      starryCanvas.width = window.innerWidth;
+      starryCanvas.height = window.innerHeight;
+      initStars();
+    }
+
+    // 星空星星类
+    class Star {
+      constructor() {
+        this.x = Math.random() * starryCanvas.width;
+        this.y = Math.random() * starryCanvas.height;
+        this.radius = Math.random() * 1.2 + 0.1;
+        this.brightness = Math.random() * 0.8 + 0.2;
+        this.speed = Math.random() * 0.2 + 0.05;
+        this.color = Math.random() > 0.7 ? '#00f0ff' : Math.random() > 0.8 ? '#9d00ff' : '#ffffff';
+      }
+
+      update() {
+        this.brightness += Math.sin(Date.now() * 0.001 + this.x * 0.1) * 0.02;
+        this.brightness = Math.max(0.2, Math.min(1, this.brightness));
+        this.y += this.speed;
+        if (this.y > starryCanvas.height) {
+          this.y = -this.radius;
+          this.x = Math.random() * starryCanvas.width;
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(${this.getColorRGB()}, ${this.brightness})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 获取星星RGB颜色
+      getColorRGB() {
+        if (this.color === '#00f0ff') return '0, 240, 255';
+        if (this.color === '#9d00ff') return '157, 0, 255';
+        return '255, 255, 255';
+      }
+    }
+
+    // 初始化星空星星
+    function initStars() {
+      stars = [];
+      const starCount = Math.floor((starryCanvas.width * starryCanvas.height) / 8000);
+      for (let i = 0; i < starCount; i++) {
+        stars.push(new Star());
+      }
+    }
+
+    // 星空动画循环
+    function animateStarrySky() {
+      ctx.clearRect(0, 0, starryCanvas.width, starryCanvas.height);
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].update();
+        stars[i].draw();
+      }
+      requestAnimationFrame(animateStarrySky);
+    }
+
+    // ========== 2. 星星单元（头像+昵称）无重叠随机排列 ==========
+    const userStarsContainer = document.getElementById('userStarsContainer');
+    let starUnits = [];
+    let avatarSize = getAvatarSize();
+    let nicknameMargin = getNicknameMargin();
+
+    // 获取响应式头像尺寸
+    function getAvatarSize() {
+      if (window.innerWidth >= 1024) {
+        return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-size-desktop'));
+      } else if (window.innerWidth >= 768) {
+        return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-size-tablet'));
+      } else {
+        return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-size-mobile'));
+      }
+    }
+
+    // 获取昵称与头像的间距
+    function getNicknameMargin() {
+      if (window.innerWidth >= 1024) {
+        return 12;
+      } else if (window.innerWidth >= 768) {
+        return 10;
+      } else {
+        return 8;
+      }
+    }
+
+    // 获取昵称高度（基于字体大小）
+    function getNicknameHeight() {
+      let fontSize = 12;
+      if (window.innerWidth >= 1024) {
+        fontSize = 16;
+      } else if (window.innerWidth >= 768) {
+        fontSize = 14;
+      }
+      return fontSize * 1.2; // 字体高度系数
+    }
+
+    // 碰撞检测：判断新星星单元是否与已有单元重叠
+    function isOverlap(newX, newY, unitWidth, unitHeight, existingUnits) {
+      const padding = 10; // 降低间距缓冲，更容易找到有效位置
+      for (let unit of existingUnits) {
+        // 简化碰撞检测：使用矩形碰撞（更高效，更容易适配）
+        const newLeft = newX - unitWidth / 2 - padding;
+        const newRight = newX + unitWidth / 2 + padding;
+        const newTop = newY - unitHeight / 2 - padding;
+        const newBottom = newY + unitHeight / 2 + padding;
+
+        const unitLeft = unit.x - unit.width / 2 - padding;
+        const unitRight = unit.x + unit.width / 2 + padding;
+        const unitTop = unit.y - unit.height / 2 - padding;
+        const unitBottom = unit.y + unit.height / 2 + padding;
+
+        // 矩形重叠判断
+        if (newLeft < unitRight && newRight > unitLeft && newTop < unitBottom && newBottom > unitTop) {
+          return true; // 存在重叠
+        }
+      }
+      return false; // 无重叠
+    }
+
+    // 生成单个星星单元（头像+昵称）
+    function createStarUnit(user) {
+      // 创建星星单元容器
+      const starUnit = document.createElement('div');
+      starUnit.className = 'star-unit';
+
+      // 创建头像元素
+      const avatar = document.createElement('div');
+      avatar.className = 'user-avatar';
+      const avatarImg = document.createElement('img');
+      avatarImg.src = user.avatar;
+      avatarImg.alt = `${user.nickname}头像`;
+      avatar.appendChild(avatarImg);
+
+      // 创建昵称元素
+      const nickname = document.createElement('div');
+      nickname.className = 'user-nickname';
+      nickname.textContent = user.nickname;
+
+      // 组装单元
+      starUnit.appendChild(avatar);
+      starUnit.appendChild(nickname);
+
+      return starUnit;
+    }
+
+    // 批量生成星星单元并排列
+    function renderStarUnits() {
+      // 清空容器
+      userStarsContainer.innerHTML = '';
+      starUnits = [];
+      avatarSize = getAvatarSize();
+      nicknameMargin = getNicknameMargin();
+      const nicknameHeight = getNicknameHeight();
+      const unitWidth = avatarSize; // 单元宽度等于头像宽度
+      const unitHeight = avatarSize + nicknameMargin + nicknameHeight; // 单元总高度
+
+      const containerWidth = userStarsContainer.offsetWidth;
+      const containerHeight = userStarsContainer.offsetHeight;
+      const existingUnits = []; // 存储已生成单元的位置和尺寸
+
+      // 遍历用户数据生成星星单元
+      userData.forEach(user => {
+        const starUnit = createStarUnit(user);
+        let attempts = 0;
+        let isPositionValid = false;
+        let x = 0;
+        let y = 0;
+
+        // 增加尝试次数，提高找到有效位置的概率
+        while (!isPositionValid && attempts < 300) {
+          // 随机生成位置（确保单元完全在容器内）
+          x = Math.random() * (containerWidth - unitWidth) + unitWidth / 2;
+          y = Math.random() * (containerHeight - unitHeight) + unitHeight / 2;
+
+          // 检测是否重叠（取单元中心坐标）
+          if (!isOverlap(x, y, unitWidth, unitHeight, existingUnits)) {
+            isPositionValid = true;
+          }
+          attempts++;
+        }
+
+        // 如果找到有效位置，添加到容器
+        if (isPositionValid) {
+          // 计算单元左上角坐标（中心坐标转左上角）
+          const left = x - unitWidth / 2;
+          const top = y - unitHeight / 2;
+          starUnit.style.left = `${left}px`;
+          starUnit.style.top = `${top}px`;
+          userStarsContainer.appendChild(starUnit);
+          starUnits.push(starUnit);
+          // 记录当前单元的位置和尺寸
+          existingUnits.push({
+            x: x,
+            y: y,
+            width: unitWidth,
+            height: unitHeight
+          });
+        }
+      });
+    }
+
+    // ========== 3. 窗口大小变化适配 ==========
+    window.addEventListener('resize', () => {
+      resizeStarryCanvas();
+      renderStarUnits();
+    });
+
+    // ========== 初始化页面 ==========
+    function initPage() {
+      // 初始化星空
+      resizeStarryCanvas();
+      animateStarrySky();
+
+      // 初始化星星单元排列
+      renderStarUnits();
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('load', initPage);
+  </script>
+</body>
+</html>

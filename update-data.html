@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端适配核心meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="./logo.png">
+    <title>更新日志 | 十中信息墙</title>
+    <meta name="description" content="产品更新日志，记录所有版本的功能新增、问题修复和体验优化">
+
+    <!--
+  #####    #####   #######
+ #     #  #     #  #      
+       #  #     #  #      
+   ####   #     #   ##### 
+       #  #     #        #
+ #     #  #     #  #     #
+  #####    #####    ##### 
+                           -->
+  
+    <style>
+        /* 全局重置 & 基础样式 (兼容各浏览器默认样式) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+        }
+
+        /* 跨系统/浏览器兼容字体 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            line-height: 1.7;
+            color: #333;
+            background-color: #f5f7fa;
+            padding: 1rem 0;
+            /* IE11兼容 */
+            font-size: 16px;
+        }
+
+        /* 容器适配 (响应式居中) */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        /* 头部样式 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            /* 适配小屏 */
+            line-height: 1.2;
+        }
+
+        .page-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* 日志项基础样式 */
+        .changelog-item {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e9f0;
+        }
+
+        /* 日志头部 (版本+日期) */
+        .changelog-header {
+            display: -webkit-box; /* 兼容iOS/安卓webkit内核 */
+            display: -ms-flexbox; /* IE11 */
+            display: flex;
+            -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .changelog-version {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #165dff;
+        }
+
+        .changelog-date {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* 更新类型标签 */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-new {
+            background-color: #00b42a;
+            color: #ffffff;
+        }
+
+        .badge-fix {
+            background-color: #f53f3f;
+            color: #ffffff;
+        }
+
+        .badge-optimize {
+            background-color: #17a2b8;
+            color: #ffffff;
+        }
+
+        .badge-deprecate {
+            background-color: #ff7d00;
+            color: #ffffff;
+        }
+
+        /* 日志内容列表 */
+        .changelog-content {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .changelog-content li {
+            padding: 0.75rem 0;
+            border-left: 3px solid #e5e9f0;
+            padding-left: 1rem;
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        /* 空状态提示 */
+        .empty-tip {
+            text-align: center;
+            padding: 3rem 0;
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* 底部信息 */
+        .page-footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding: 1rem 0;
+        }
+
+        /* 响应式适配 (移动端/平板/PC) */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .changelog-header {
+                -webkit-box-orient: vertical;
+                -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                flex-direction: column;
+                -webkit-box-align: start;
+                -ms-flex-align: start;
+                align-items: flex-start;
+            }
+
+            .changelog-date {
+                margin-top: 0.5rem;
+            }
+
+            .changelog-item {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .changelog-version {
+                font-size: 1.1rem;
+            }
+
+            .badge {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+
+        /* 兼容Linux下的滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* IE11滚动条兼容 */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <header class="page-header">
+            <h1>武冈十中信息墙</h1>
+        </header>
+
+        <!-- 日志列表 -->
+        <main class="changelog-list">
+            <!-- 版本 2.0.0 -->
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">v2.0.0</span>
+                    <span class="changelog-date">2025-12-25</span>
+                </div>
+                <div class="changelog-content-wrap">
+                    <div class="badge-group">
+                        <span class="badge badge-new">新增</span>
+                        <span class="badge badge-fix">修复</span>
+                        <span class="badge badge-optimize">优化</span>
+                    </div>
+                    <ul class="changelog-content">
+                        <li>不想写了，每次改都是大规模的。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 版本 1.2.0 -->
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">v1.2.0</span>
+                    <span class="changelog-date">2025-12-14</span>
+                </div>
+                <div class="changelog-content-wrap">
+                    <div class="badge-group">
+                        <span class="badge badge-new">新增</span>
+                        <span class="badge badge-fix">修复</span>
+                        <span class="badge badge-optimize">优化</span>
+                    </div>
+                    <ul class="changelog-content">
+                        <li>新增：移动端适配优化功能，提升iOS/安卓小屏设备使用体验</li>
+                        <li>新增：应急通知框架建立</li>
+                        <li>修复：所有评论功能的日志权限不足导致的报错问题</li>
+                        <li>优化：反馈页背景更新</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 版本 1.1.0 -->
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">v1.1.0</span>
+                    <span class="changelog-date">2025-11-30</span>
+                </div>
+                <div class="changelog-content-wrap">
+                    <div class="badge-group">
+                        <span class="badge badge-new">新增</span>
+                        <span class="badge badge-optimize">优化</span>
+                        <span class="badge badge-deprecate">废弃</span>
+                    </div>
+                    <ul class="changelog-content">
+                        <li>新增：全局动画框架建立</li>
+                        <li>优化：Edge浏览器兼容性，修复部分样式错位</li>
+                        <li>废弃：IE10及以下版本的兼容支持（仅保留IE11）</li>
+                    </ul> 
+                </div>
+            </div>
+
+            <!-- 版本 1.0.0 -->
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">v1.0.0</span>
+                    <span class="changelog-date">2025-10-15</span>
+                </div>
+                <div class="changelog-content-wrap">
+                    <div class="badge-group">
+                        <span class="badge badge-new">新增</span>
+                    </div>
+                    <ul class="changelog-content">
+                        <li>新增：支持Windows/Linux/macOS/安卓/iOS多端</li>
+                        <li>新增：兼容Chrome/Firefox/Safari/Edge/IE11浏览器</li>
+                        <li>新增：用户中心模块，支持多端数据同步</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页面底部 -->
+        <footer class="page-footer">
+           305制造
+        </footer>
+    </div>
+
+    <script>
+        // 兼容IE11的DOM加载事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有日志项
+            const changelogItems = document.querySelectorAll('.changelog-item');
+            // 获取所有内容容器
+            const contentWraps = document.querySelectorAll('.changelog-content-wrap');
+
+            // 初始化：默认展开第一个日志项，其余折叠
+            contentWraps.forEach((wrap, index) => {
+                wrap.style.display = index === 0 ? 'block' : 'none';
+            });
+
+            // 为每个日志头部添加点击折叠/展开事件
+            changelogItems.forEach(item => {
+                const header = item.querySelector('.changelog-header');
+                const contentWrap = item.querySelector('.changelog-content-wrap');
+
+                // 点击事件 (兼容所有浏览器)
+                header.addEventListener('click', function() {
+                    contentWrap.style.display = contentWrap.style.display === 'none' ? 'block' : 'none';
+                });
+
+                // PC端hover效果
+                header.addEventListener('mouseover', function() {
+                    this.style.opacity = '0.9';
+                    this.style.transition = 'opacity 0.2s ease';
+                });
+
+                header.addEventListener('mouseout', function() {
+                    this.style.opacity = '1';
+                });
+            });
+
+            // 兼容IE11的CSS属性
+            if (!!window.MSInputMethodContext && !!document.documentMode) {
+                // IE11专属样式调整
+                document.body.style.fontSize = '16px';
+                const badges = document.querySelectorAll('.badge');
+                badges.forEach(badge => {
+                    badge.style.display = 'inline-block';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

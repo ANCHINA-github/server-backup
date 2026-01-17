@@ -1,0 +1,111 @@
+/* 蒙层样式 */
+.notify-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    display: none;
+}
+
+/* 通知容器核心样式 */
+.notify-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px 8px 0 0;
+    z-index: 9999;
+    display: none;
+    /* 通知背景色修改处 ↓ */
+    background-color: #ff0000;
+    /* 通知背景色修改处 ↑ */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease-out;
+}
+
+/* 通知滑入显示状态 */
+.notify-container.show {
+    transform: translate(-50%, 0);
+    display: block;
+}
+
+/* 关闭按钮 */
+.notify-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: color 0.2s;
+}
+.notify-close:hover {
+    color: #ff9292;
+}
+
+/* 倒计时提示 */
+.notify-countdown {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    color: #ff7300;
+}
+
+/* 内容区 */
+.notify-content {
+    padding: 40px 20px 20px;
+    overflow: hidden;
+}
+
+/* 通知图片 */
+.notify-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+/* 响应式适配 */
+@media (max-width: 576px) {
+    .notify-container {
+        width: 100%;
+        border-radius: 0;
+    }
+    .notify-content {
+        padding: 35px 15px 15px;
+    }
+}
+
+/* 文本基础样式 */
+.notify-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+.notify-body {
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+.notify-note {
+    font-size: 12px;
+    color: #b5b5b5;
+    margin-bottom: 12px;
+}
+.notify-link {
+    color: #ffff00;
+    text-decoration: none;
+}
+.notify-link:hover {
+    text-decoration: underline;
+}
