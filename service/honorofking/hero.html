@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="./1504.png">
+  <title>王者荣耀英雄应援站</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C41E3A', // 王者荣耀标志性红色
+            secondary: '#FFD700', // 金色
+            dark: '#1A1A2E', // 深色背景
+            accent: '#7E22CE', // 紫色点缀
+          },
+          fontFamily: {
+            warrior: ['"Ma Shan Zheng"', 'cursive'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      }
+      .text-shadow-lg {
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+      }
+      .border-pattern {
+        background-image: linear-gradient(45deg, #C41E3A 25%, transparent 25%), 
+                          linear-gradient(-45deg, #C41E3A 25%, transparent 25%), 
+                          linear-gradient(45deg, transparent 75%, #C41E3A 75%), 
+                          linear-gradient(-45deg, #FFD700 75%, #C41E3A 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      }
+      .glow-effect {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+      }
+    }
+  </style>
+  
+  <!-- 引入中文字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-dark flex flex-col justify-between items-center p-4 relative">
+  <!-- 背景图（固定不动） -->
+  <div class="fixed inset-0 z-0"> <!-- 关键修改：将absolute改为fixed -->
+    <img src="./pvpIP.jpg" alt="王者荣耀背景" 
+         class="w-full h-full object-cover opacity-40">
+    <!-- 暗纹覆盖层 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-dark/70 via-dark/50 to-dark/80"></div>
+  </div>
+
+  <!-- 主标题 -->
+  <header class="relative z-10 mt-10 text-center">
+    <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-warrior text-secondary text-shadow-lg tracking-wider">
+      王者荣耀英雄应援站
+    </h1>
+    <div class="w-64 h-1 bg-primary mx-auto mt-2 mb-8"></div>
+  </header>
+
+  <!-- 主要内容：英雄应援站链接 -->
+  <main class="relative z-10 w-full max-w-6xl flex-grow flex flex-wrap justify-center items-center gap-6 md:gap-10 py-8">
+    <!-- 少司缘 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="./hero/shaosiyuan.jpg" alt="少司缘" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">少司缘</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+
+    <!-- 大司命 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="hero/dasiming.jpg" alt="大司命" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">大司命</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+
+    <!-- 海诺 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="./hero/hainuo.jpg" alt="海诺" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">海诺</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+
+    <!-- 朵莉亚 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="./hero/duoliya.jpg" alt="朵莉亚" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">朵莉亚</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+
+    <!-- 瑶 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="./hero/yunyao.jpg" alt="瑶" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">瑶</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+
+    <!-- 云中君 -->
+    <a href="#" class="group relative w-40 h-56 md:w-56 md:h-72 flex flex-col items-center justify-end p-4 rounded-lg overflow-hidden transition-all duration-500 hover:scale-105 hover:glow-effect">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent z-10"></div>
+      <img src="./hero/yunyao.jpg" alt="云中君" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+      <h2 class="text-secondary font-warrior text-xl md:text-2xl text-shadow z-20 mb-1 transition-colors duration-300 group-hover:text-white">云中君</h2>
+      <div class="w-16 h-0.5 bg-primary z-20 mb-3 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+      <span class="text-white/80 text-sm z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">应援站</span>
+    </a>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="relative z-10 w-full max-w-6xl py-6 text-center border-t border-primary/30 mt-8 mb-4">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-white/70 text-sm">
+        王者荣耀十周年制作
+      </div>
+      <div class="flex gap-6">
+        <a href="tencent://ntqq-open?subCmd=profile&action=openMiniBuddyProfile&actionParams={&quot;uin&quot;:&quot;1993802081&quot;,&quot;sourceType&quot;:&quot;QrCodeShareBuddyLink&quot;}" class="text-white/70 hover:text-secondary transition-colors duration-300">
+          <i class="fa fa-qq text-xl"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 动画效果脚本 -->
+  <script>
+    // 页面加载时的渐入效果
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('main a');
+      links.forEach((link, index) => {
+        link.style.opacity = '0';
+        link.style.transform = 'translateY(20px)';
+        link.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+          link.style.opacity = '1';
+          link.style.transform = 'translateY(0)';
+        }, 100 + index * 100);
+      });
+    });
+  </script>
+</body>
+</html>
